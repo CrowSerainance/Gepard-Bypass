@@ -2,27 +2,51 @@
   <br>
   <a href="https://hypercall.net"><img src="https://i.imgur.com/9vQOK3e.png" alt="logo" width="200"></a>
   <br>
-  Gepard Bypass 
+  Gepard Bypass
   <br>
 </h1>
 
-<h4 align="center">A way to get rid of Gepard</h4>
+<h4 align="center">Research code for understanding legacy Gepard anti-cheat hooks.</h4>
 
-## The Gepard anti-cheat
+## Project status (as of May 21, 2026)
 
-The gepard anti-cheat is made of one dll which hooks windows APIs and blocks loading of dlls through a TLS callback. The special feature of this anti-cheat was the additional packet encryption for game developers.
+This repository is a legacy Visual Studio C++ project that targets Win32/x64 and uses inline assembly and API detours.
 
-## The bypass
+### Up-to-date check
 
-In order to break through the anti-cheat, the various hooks are getting removed and the TLS callback gets nopped. The send-recv packets are displayed through an extra allocated console.
+- The bundled `detours.h` is **Microsoft Detours 3.0 Build 316**.
+- The current upstream Detours release is **4.0.1** (GitHub releases page).
+- Result: this repository is **not fully up to date** with upstream Detours.
 
-## Compiling
+## What this code does
 
-To compile the bypass you need [Visual Studio](https://www.visualstudio.com).
+At a high level, the loader:
+
+- snapshots original bytes of selected APIs,
+- loads `gepard_o.dll`,
+- patches checks that are hard-coded at fixed offsets,
+- hooks network send/recv paths,
+- and logs packet buffers in a console.
+
+## Build requirements
+
+- Windows 10/11
+- Visual Studio 2022 with **Desktop development with C++** workload
+- MSVC **v143** toolset
+- Windows SDK 10.0+
+
+## Building
+
+1. Open `Gepard.sln` in Visual Studio 2022.
+2. Choose `Debug|Win32`, `Release|Win32`, `Debug|x64`, or `Release|x64`.
+3. Build the `Gepard` project.
+
+## Notes
+
+- This project contains many hard-coded offsets tied to a specific target binary layout.
+- If target binaries change, offsets and hooks must be re-validated before use.
+- This repository is provided for reverse-engineering and defensive research discussion.
 
 ## License
 
-*Gepard* is licensed under MIT, which means you can freely distribute and/or modify the source of *Gepard*.
-
-
-
+MIT.
